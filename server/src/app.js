@@ -8,7 +8,28 @@ import studentRoutes from './routes/studentRoutes.js';
 const app = express();
 
 // Middleware
-app.use(cors()); // Allow Frontend to connect
+const allowedOrigins = [
+  'http://localhost:5173', // For local testing
+  process.env.CLIENT_URL,  // Your deployed Frontend URL (e.g., https://infinitus.vercel.app)
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // Important for cookies/sessions if you use them
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
 app.use(express.json());
 
 // Routes
