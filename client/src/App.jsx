@@ -10,7 +10,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import AdminScanner from "./pages/AdminScanner";
-import VendorDashboard from "./pages/VendorDashboard";
+import AdminStats from "./pages/AdminStats";
+//import VendorDashboard from "./pages/VendorDashboard";
+import VendorStats from "./pages/VendorStats";
+import VendorScanner from "./pages/VendorScanner";
+import StudentStats from "./pages/StudentStats";
 
 // Guard 1: Must be logged in
 const RequireAuth = () => {
@@ -63,15 +67,24 @@ export default function App() {
             <Route element={<RequireProfile />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/me/stats" element={<StudentStats />} />
 
               {/* ADMIN AREA (Nested inside Profile check to ensure they are fully set up) */}
               <Route element={<RequireAdmin />}>
-                <Route path="/admin" element={<AdminScanner />} />
+                <Route path="/admin/scanner" element={<AdminScanner />} />
+                <Route path="/admin/stats" element={<AdminStats />} />
               </Route>
             </Route>
           </Route>
           <Route element={<RequireVendor />}>
-            <Route path="/vendor" element={<VendorDashboard />} />
+            {/* Redirect /vendor to scanner by default */}
+            <Route
+              path="/vendor"
+              element={<Navigate to="/vendor/scanner" replace />}
+            />
+
+            <Route path="/vendor/scanner" element={<VendorScanner />} />
+            <Route path="/vendor/stats" element={<VendorStats />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />

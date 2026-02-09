@@ -66,7 +66,8 @@ export default function AdminScanner() {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}_${Math.random()}.${fileExt}`
       const filePath = `admin_${user.id}/${fileName}`
-
+      
+      //storing in supabase storage
       const { error: uploadError } = await supabase.storage
         .from('proofs')
         .upload(filePath, compressedFile)
@@ -141,7 +142,7 @@ export default function AdminScanner() {
                 onScan={handleScan}
                 formats={['qr_code']}
                 components={{
-                    audio: false, // Mute the beep
+                    audio: true, 
                     torch: true   // Add flashlight button if supported
                 }}
             />

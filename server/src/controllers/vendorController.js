@@ -32,17 +32,24 @@ export const deductTokens = async (req, res) => {
   }
 };
 
+
 // GET /api/vendor/stats
 export const getVendorStats = async (req, res) => {
   const vendorId = req.user.id;
   
   try {
-    // Fetch all sales by this vendor
+    // Fetch transactions AND the Student Name in one query
     const { data: txns, error } = await supabaseAdmin
       .from('transactions')
-      .select('amount, created_at')
-      .eq('admin_id', vendorId) // In DEBIT txns, admin_id is the vendor
-      .eq('type', 'DEBIT');
+      .select(`
+        amount, 
+        created_at, 
+        student:profiles!student_id ( full_name, registration_number ) 
+      `)
+      .eq('admin_id', vendorId) // For vendors, admin_id = vendor_id
+      .eq('type', 'DEBIT')
+      .order('created_at', { ascending: false }) // Newest first
+      .limit(100); // Limit to last 100 to keep it fast
 
     if (error) throw error;
 
@@ -51,23 +58,34 @@ export const getVendorStats = async (req, res) => {
     const totalCustomers = txns.length;
 
     // 2. Prepare Graph Data (Footfall by Hour)
-    // Create an array of 24 hours initialized to 0
+    // Initialize 24 hours
     const hours = Array(24).fill(0).map((_, i) => ({ 
       hour: `${i}:00`, 
       sales: 0,
       count: 0
     }));
 
+    // Fill graph data
     txns.forEach(t => {
+      // Convert UTC DB time to local hour
       const date = new Date(t.created_at);
-      const hour = date.getHours(); // 0-23
-      hours[hour].sales += t.amount;
-      hours[hour].count += 1;
+      const hour = date.getHours(); 
+      if (hours[hour]) {
+        hours[hour].sales += t.amount;
+        hours[hour].count += 1;
+      }
     });
 
-    res.json({ totalSales, totalCustomers, chartData: hours });
+    // 3. Send everything including the raw list
+    res.json({ 
+      totalSales, 
+      totalCustomers, 
+      chartData: hours,
+      recentTransactions: txns // <--- The new list
+    });
 
   } catch (err) {
+    console.error("Stats Error:", err);
     res.status(500).json({ error: 'Stats failed' });
   }
 };

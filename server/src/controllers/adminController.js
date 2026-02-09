@@ -44,3 +44,44 @@ export const addTokens = async (req, res) => {
     res.status(500).json({ error: 'Internal system error' });
   }
 };
+
+// GET /api/admin/stats
+export const getAdminStats = async (req, res) => {
+  const adminId = req.user.id;
+
+  try {
+    // 1. Run the RPC for the big numbers (Total & Unique)
+    const statsPromise = supabaseAdmin.rpc('get_admin_stats', {
+      p_admin_id: adminId
+    });
+
+    // 2. Run a standard query for the "Recent History" list
+    const listPromise = supabaseAdmin
+      .from('transactions')
+      .select(`
+        amount, 
+        created_at, 
+        student:profiles!student_id ( full_name, registration_number )
+      `)
+      .eq('admin_id', adminId)
+      .eq('type', 'CREDIT') // Only show money GIVEN
+      .order('created_at', { ascending: false }) // Newest first
+      .limit(50);
+
+    // Run both in parallel for speed
+    const [statsResult, listResult] = await Promise.all([statsPromise, listPromise]);
+
+    if (statsResult.error) throw statsResult.error;
+    if (listResult.error) throw listResult.error;
+
+    // Combine the data
+    res.json({
+      ...statsResult.data, // totalTokens, uniqueStudents
+      recentTransactions: listResult.data
+    });
+
+  } catch (err) {
+    console.error('Stats Error:', err);
+    res.status(500).json({ error: 'Failed to fetch admin stats' });
+  }
+};
