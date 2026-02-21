@@ -32,53 +32,79 @@ export default function StudentStats() {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  
   return (
     <Layout>
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-800 mb-4">My Passbook</h1>
+      <div className="mb-6 animate-fade-in">
+        <h1 className="text-2xl font-black text-white mb-6 drop-shadow-md tracking-wide">
+          My Passbook
+        </h1>
 
         {loading ? (
           <div className="animate-pulse space-y-4">
-            <div className="h-32 bg-gray-200 rounded-xl"></div>
-            <div className="h-64 bg-gray-200 rounded-xl"></div>
+            {/* Glassmorphic Skeleton Loaders */}
+            <div className="h-32 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
+            <div className="h-64 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
           </div>
         ) : (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-6">
             
-            {/* 1. Wallet Summary */}
+            {/* 1. Wallet Summary - Neon Glass Vibe */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-indigo-600 text-white p-5 rounded-xl shadow-lg">
-                <p className="text-xs opacity-80 uppercase font-bold tracking-wider">Current Balance</p>
-                <p className="text-3xl font-black mt-1">{data.balance} T</p>
+              
+              {/* Current Balance Card */}
+              <div className="bg-indigo-500/10 backdrop-blur-md p-5 rounded-2xl border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.15)] relative overflow-hidden">
+                <div className="absolute -top-4 -right-4 w-16 h-16 bg-indigo-500/30 rounded-full blur-2xl"></div>
+                <p className="text-[10px] text-indigo-300 uppercase font-black tracking-widest mb-1 drop-shadow-sm">
+                  Current Balance
+                </p>
+                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-300 to-cyan-400 drop-shadow-sm">
+                  {data.balance} <span className="text-xl font-bold text-cyan-400/80">T</span>
+                </p>
               </div>
-              <div className="bg-red-50 text-red-700 p-5 rounded-xl border border-red-100 shadow-sm">
-                <p className="text-xs opacity-80 uppercase font-bold tracking-wider">Total Spent</p>
-                <p className="text-3xl font-black mt-1">-{data.totalSpent}</p>
+
+              {/* Total Spent Card */}
+              <div className="bg-red-500/10 backdrop-blur-md p-5 rounded-2xl border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.15)] relative overflow-hidden">
+                <div className="absolute -top-4 -right-4 w-16 h-16 bg-red-500/30 rounded-full blur-2xl"></div>
+                <p className="text-[10px] text-red-300 uppercase font-black tracking-widest mb-1 drop-shadow-sm">
+                  Total Spent
+                </p>
+                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-red-300 to-red-500 drop-shadow-sm">
+                  -{data.totalSpent}
+                </p>
               </div>
             </div>
 
-            {/* 2. Transaction List */}
+            {/* 2. Transaction List (Glass Panel) */}
             <div>
-              <h3 className="text-sm font-bold text-gray-500 uppercase mb-3">Recent Activity</h3>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-3 ml-1">
+                Recent Activity
+              </h3>
+              
+              <div className="bg-black/40 backdrop-blur-xl rounded-2xl shadow-xl border border-white/10 overflow-hidden">
                 {data.transactions.length === 0 ? (
-                  <div className="p-8 text-center text-gray-400 text-sm">No transactions yet.</div>
+                  <div className="p-8 text-center text-white/50 text-sm font-light">
+                    No transactions yet.
+                  </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-white/5">
                     {data.transactions.map((txn, i) => (
-                      <div key={i} className="p-4 flex justify-between items-center hover:bg-gray-50 transition">
+                      <div key={i} className="p-4 flex justify-between items-center hover:bg-white/5 transition-colors duration-200">
                         
                         {/* Left: Info */}
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold
-                            ${txn.type === 'CREDIT' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                          {/* Neon Icon Container */}
+                          <div className={` flex items-center justify-center text-lg font-bold 
+                            ${txn.type === 'CREDIT' 
+                              ? ' text-green-400' 
+                              : ' text-red-400'}`}>
                             {txn.type === 'CREDIT' ? '↓' : '↑'}
                           </div>
                           <div>
-                            <p className="font-bold text-gray-800 text-sm">
+                            <p className="font-bold text-white text-sm tracking-wide">
                               {txn.counterparty?.full_name || "Unknown"}
                             </p>
-                            <p className="text-[10px] text-gray-400 uppercase font-bold">
+                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mt-0.5">
                               {formatDate(txn.created_at)}
                             </p>
                           </div>
@@ -86,7 +112,7 @@ export default function StudentStats() {
 
                         {/* Right: Amount */}
                         <div className="text-right">
-                          <p className={`font-black text-lg ${txn.type === 'CREDIT' ? 'text-green-600' : 'text-gray-900'}`}>
+                          <p className={`font-black text-lg drop-shadow-sm ${txn.type === 'CREDIT' ? 'text-green-400' : 'text-white'}`}>
                             {txn.type === 'CREDIT' ? '+' : '-'}{txn.amount}
                           </p>
                         </div>
@@ -97,7 +123,11 @@ export default function StudentStats() {
               </div>
             </div>
             
-            <button onClick={fetchWallet} className="w-full py-4 text-sm text-gray-400 hover:text-gray-600 underline">
+            {/* Refresh Button */}
+            <button 
+              onClick={fetchWallet} 
+              className="w-full py-4 text-sm font-medium text-gray-400 hover:text-white transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/60"
+            >
               Refresh Passbook
             </button>
           </div>
