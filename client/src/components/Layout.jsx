@@ -2,7 +2,7 @@ import Navbar from "./Navbar";
 import { useAuth } from "../contexts/AuthContext";
 import { LogOut } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import ColorBends from "./ColorBends"; // This should now work perfectly
+import ColorBends from "./ColorBends";
 
 export default function Layout({ children }) {
   const { user } = useAuth();
@@ -12,9 +12,9 @@ export default function Layout({ children }) {
   };
 
   return (
-    // 1. Removed bg-gray-50, changed to text-white, added relative/isolate context
+    
     <div className="min-h-screen font-sans text-white relative isolate bg-black">
-      {/* 2. BACKGROUND LAYER: Fixed positioned behind all content */}
+      
       <div className="fixed inset-0 -z-10">
         <ColorBends
           rotation={64}
@@ -31,7 +31,7 @@ export default function Layout({ children }) {
         />
       </div>
 
-      {/* 3. FOREGROUND CONTENT */}
+      
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar />
 
@@ -39,11 +39,11 @@ export default function Layout({ children }) {
           {children}
         </main>
 
-        {/* 4. FOOTER: Converted to dark Glassmorphism */}
+       
         {user && (
           <div className="fixed bottom-0 left-0 w-full bg-black/40 backdrop-blur-md border-t border-white/10 p-4 z-50">
             <div className="max-w-md mx-auto flex justify-between items-center text-xs text-gray-400">
-              {/* Updated Left Side: Made in [Logo] Next Tech Lab */}
+              
               <div className="flex items-center gap-1.5">
                 <span>Made in</span>
                 <img

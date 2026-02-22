@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase'; // <-- Added this import
+import { supabase } from '../lib/supabase'; 
 import { Menu, X, QrCode, BarChart2, LogOut, User, Wallet } from 'lucide-react';
 
 export default function Navbar() {
@@ -9,10 +9,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // If not logged in, don't show navbar (or show simple login link)
+  // If not logged in, don't show navbar 
   if (!user || !profile) return null;
 
-  const role = profile.role; // 'student', 'admin', 'vendor'
+  const role = profile.role; 
 
   // Handle Logout Logic
   const handleLogout = async () => {
@@ -33,7 +33,7 @@ export default function Navbar() {
           { name: 'POS Terminal', path: '/vendor/scanner', icon: <QrCode size={20} /> },
           { name: 'Sales Report', path: '/vendor/stats', icon: <BarChart2 size={20} /> },
         ];
-      default: // STUDENTS
+      default: // default state is students
         return [
           { name: 'My Passbook', path: '/me/stats', icon: <Wallet size={20} /> },
         ];
@@ -43,12 +43,11 @@ export default function Navbar() {
   const menuItems = getMenuItems();
 
   return (
-    // 1. Glassmorphism on the main nav bar
+    
     <nav className="bg-black/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-md mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           
-          {/* Logo / Home Link - Replaced text with Image */}
           <Link to="/dashboard" className="flex items-center">
             <img 
               src="/InfinitusLogo.png" 
@@ -60,7 +59,7 @@ export default function Navbar() {
           {/* Desktop/Mobile Menu Button */}
           <div className="flex items-center gap-4">
             
-            {/* Role Badge (Visual Indicator) - Adapted for Dark Mode */}
+            
             {role !== 'student' && (
                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide border
                  ${role === 'admin' 

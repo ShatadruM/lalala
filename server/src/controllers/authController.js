@@ -5,7 +5,7 @@ export const getMyStatus = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Fetch profile using Admin Client (Bypasses RLS recursion/lock issues)
+    // Fetch profile using Admin Client 
     const { data: profile, error } = await supabaseAdmin
       .from('profiles')
       .select('*')
@@ -21,9 +21,9 @@ export const getMyStatus = async (req, res) => {
     const isRegistered = !!(profile && profile.registration_number && profile.college_name);
 
     res.json({
-      user: req.user,       // Auth Data (Email, ID)
-      profile: profile,     // Public Data (Name, Balance, Role)
-      isRegistered          // Helper flag for Frontend
+      user: req.user,       
+      profile: profile,     
+      isRegistered          
     });
 
   } catch (err) {

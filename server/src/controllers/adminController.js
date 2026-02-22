@@ -1,18 +1,18 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
-// POST /api/admin/credit (Assuming this is a POST based on your frontend fetch)
+// POST /api/admin/credit 
 export const addTokens = async (req, res) => {
   const { studentId, amount, proofUrl, utrNumber } = req.body; // <-- Added utrNumber
   const adminId = req.user.id;
 
-  // 1. Strict Validation: UTR is now mandatory
+  //  Strict Validation of UTR 
   if (!studentId || !amount || !proofUrl || !utrNumber) {
     return res
       .status(400)
       .json({ error: "Missing details: Proof image and UTR are mandatory." });
   }
 
-  // 2. Double-check UTR length on the backend (Security Best Practice)
+  //  Double-check UTR length 
   if (utrNumber.trim().length !== 12) {
     return res
       .status(400)
@@ -25,13 +25,13 @@ export const addTokens = async (req, res) => {
   }
 
   try {
-    // ATOMIC CALL: We send ONE request to Supabase.
+    // ATOMIC CALL: sending one request to Supabase.
     const { data, error } = await supabaseAdmin.rpc("add_tokens_atomic", {
       p_admin_id: adminId,
       p_student_id: studentId,
       p_amount: creditAmount,
       p_proof_url: proofUrl,
-      p_utr_number: utrNumber.trim().toUpperCase(), // <-- Passed to RPC, sanitized
+      p_utr_number: utrNumber.trim().toUpperCase(), 
     });
 
     if (error) {
@@ -73,12 +73,12 @@ export const getAdminStats = async (req, res) => {
   const adminId = req.user.id;
 
   try {
-    // 1. Run the RPC for the big numbers (Total & Unique)
+   
     const statsPromise = supabaseAdmin.rpc("get_admin_stats", {
       p_admin_id: adminId,
     });
 
-    // 2. Run a standard query for the "Recent History" list
+    //  Run a standard query for the "Recent History" list
     const listPromise = supabaseAdmin
       .from("transactions")
       .select(
@@ -89,8 +89,8 @@ export const getAdminStats = async (req, res) => {
       `,
       )
       .eq("admin_id", adminId)
-      .eq("type", "CREDIT") // Only show money GIVEN
-      .order("created_at", { ascending: false }) // Newest first
+      .eq("type", "CREDIT") 
+      .order("created_at", { ascending: false }) 
       .limit(50);
 
     // Run both in parallel for speed

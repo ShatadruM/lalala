@@ -8,7 +8,7 @@ export default function Register() {
   const { user, setProfile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(""); // New state for strict validation
+  const [errorMsg, setErrorMsg] = useState(""); 
 
   const [formData, setFormData] = useState({
     full_name: user?.user_metadata?.full_name || "",
@@ -21,9 +21,9 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg(""); // Clear previous errors
+    setErrorMsg(""); 
 
-    // 1. STRICT MANUAL VALIDATION
+    // fuck it manual validation
     const {
       full_name,
       phone,
@@ -61,7 +61,7 @@ export default function Register() {
       is_active: false,
     };
 
-    // 2. SUPABASE UPSERT
+    //  SUPABASE UPSERT
     const { error } = await supabase.from("profiles").upsert(updates);
 
     if (error) {
@@ -82,10 +82,7 @@ export default function Register() {
   return (
     <Layout>
       <div className="max-w-md mx-auto animate-fade-in pb-10">
-        {/* Glassmorphic Container */}
         <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-          {/* Ambient Glow */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10"></div>
 
           <h2 className="text-3xl font-black bg-clip-text text-white mb-4 drop-shadow-md">
             Register

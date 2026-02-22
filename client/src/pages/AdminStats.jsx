@@ -36,7 +36,7 @@ export default function AdminStats() {
     }
   };
 
-  // Helper for nice time formatting
+  // Helper for time formatting
   const formatTime = (isoString) => {
     return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
@@ -50,23 +50,22 @@ export default function AdminStats() {
         
         {loading ? (
           <div className="animate-pulse space-y-4">
-            {/* Glassmorphic Skeleton Loaders */}
             <div className="h-32 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
             <div className="h-64 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
           </div>
         ) : (
           <div className="space-y-6">
             
-            {/* 1. Stats Cards - Neon Glass Vibe */}
+            
             <div className="grid grid-cols-2 gap-4">
               
-              {/* Tokens Given Card */}
+             
               <div className="bg-purple-500/10 backdrop-blur-md p-5 rounded-2xl border border-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.15)] relative overflow-hidden">
                 <div className="absolute -top-4 -right-4 w-16 h-16 bg-purple-500/30 rounded-full blur-2xl"></div>
                 <p className="text-[10px] text-purple-300 uppercase font-black tracking-widest mb-1 drop-shadow-sm">
                   Tokens Given
                 </p>
-                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-purple-300 to-purple-500 drop-shadow-sm">
+                <p className="text-4xl font-black  bg-clip-text text-purple-300  drop-shadow-sm">
                   {stats.totalTokens}
                 </p>
               </div>
@@ -83,7 +82,7 @@ export default function AdminStats() {
               </div>
             </div>
 
-            {/* 2. Transaction History List (Glass Panel) */}
+            {/* Transaction History List */}
             <div>
               <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-3 ml-1">
                 Recent Activity

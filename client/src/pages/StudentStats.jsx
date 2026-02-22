@@ -42,14 +42,13 @@ export default function StudentStats() {
 
         {loading ? (
           <div className="animate-pulse space-y-4">
-            {/* Glassmorphic Skeleton Loaders */}
             <div className="h-32 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
             <div className="h-64 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
           </div>
         ) : (
           <div className="space-y-6">
             
-            {/* 1. Wallet Summary - Neon Glass Vibe */}
+            {/* Wallet Summary */}
             <div className="grid grid-cols-2 gap-4">
               
               {/* Current Balance Card */}
@@ -75,7 +74,7 @@ export default function StudentStats() {
               </div>
             </div>
 
-            {/* 2. Transaction List (Glass Panel) */}
+            {/* transaction List  */}
             <div>
               <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-3 ml-1">
                 Recent Activity
@@ -91,9 +90,9 @@ export default function StudentStats() {
                     {data.transactions.map((txn, i) => (
                       <div key={i} className="p-4 flex justify-between items-center hover:bg-white/5 transition-colors duration-200">
                         
-                        {/* Left: Info */}
+                       
                         <div className="flex items-center gap-3">
-                          {/* Neon Icon Container */}
+                          
                           <div className={` flex items-center justify-center text-lg font-bold 
                             ${txn.type === 'CREDIT' 
                               ? ' text-green-400' 
@@ -110,7 +109,7 @@ export default function StudentStats() {
                           </div>
                         </div>
 
-                        {/* Right: Amount */}
+                        
                         <div className="text-right">
                           <p className={`font-black text-lg drop-shadow-sm ${txn.type === 'CREDIT' ? 'text-green-400' : 'text-white'}`}>
                             {txn.type === 'CREDIT' ? '+' : '-'}{txn.amount}

@@ -17,7 +17,7 @@ export const requireAdmin = async (req, res, next) => {
     }
 
     if (profile.role !== 'admin') {
-      // 🚨 Security Alert: A non-admin tried to access an admin route
+      //  Security Alert: A non-admin tried to access an admin route
       console.warn(`Unauthorized Access Attempt by User ID: ${userId}`);
       return res.status(403).json({ error: 'Access denied: Admins only' });
     }

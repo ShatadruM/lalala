@@ -56,7 +56,7 @@ export default function VendorScanner() {
 
         <div className="space-y-6">
           
-          {/* 1. POS Price Setter - Glassmorphic Console */}
+          {/*  POS Price Setter */}
           <div className="bg-black/40 backdrop-blur-xl p-5 rounded-2xl shadow-xl border border-white/10 flex items-center justify-between relative overflow-hidden">
            
             
@@ -81,7 +81,7 @@ export default function VendorScanner() {
             </div>
           </div>
 
-          {/* 2. Scanner Area - Sci-Fi Viewfinder */}
+          {/* Scanner Area */}
           <div className="relative rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] aspect-square bg-black">
             <Scanner 
               onScan={handleScan}
@@ -89,24 +89,23 @@ export default function VendorScanner() {
               components={{ audio: false }}
             />
             
-            {/* Overlay UI */}
+            
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               
-              {/* Default Targeting Reticle */}
+            
               {!processing && !lastTxn && !errorMsg && (
                 <div className="w-56 h-56 border border-cyan-400/30 rounded-3xl shadow-[inset_0_0_20px_rgba(6,182,212,0.2)] flex items-center justify-center">
                   <div className="w-2 h-2 bg-cyan-400/50 rounded-full animate-pulse"></div>
                 </div>
               )}
-              
-              {/* STATUS: Processing - Floating Pill */}
+               {/* processing */}
               {processing && !lastTxn && !errorMsg && (
                 <div className="bg-black/80 backdrop-blur-md px-6 py-3 rounded-full font-bold text-cyan-300 tracking-widest uppercase text-sm border border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.4)] animate-pulse">
                   Processing...
                 </div>
               )}
 
-              {/* STATUS: Success - Neon Green Override */}
+               {/* Success */}
               {lastTxn && (
                 <div className="absolute inset-0 bg-black/90 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center animate-bounce-in z-10 border-4 border-green-500/80 shadow-[inset_0_0_50px_rgba(34,197,94,0.2)]">
                   <div className="text-6xl mb-4 bg-green-500/20 text-green-400 rounded-full w-24 h-24 flex items-center justify-center font-black border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.4)]">
@@ -124,7 +123,7 @@ export default function VendorScanner() {
                 </div>
               )}
 
-              {/* STATUS: Error - Neon Red Override */}
+              {/* Error */}
               {errorMsg && (
                 <div className="absolute inset-0 bg-black/90 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center animate-shake z-10 border-4 border-red-500/80 shadow-[inset_0_0_50px_rgba(239,68,68,0.2)]">
                   <div className="text-5xl mb-4 bg-red-500/20 text-red-400 rounded-full w-24 h-24 flex items-center justify-center font-black border border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]">

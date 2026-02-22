@@ -38,7 +38,7 @@ export const getVendorStats = async (req, res) => {
   const vendorId = req.user.id;
   
   try {
-    // Fetch transactions AND the Student Name in one query
+    // Fetch transactions and the Student Name in one query
     const { data: txns, error } = await supabaseAdmin
       .from('transactions')
       .select(`
@@ -49,11 +49,10 @@ export const getVendorStats = async (req, res) => {
       .eq('admin_id', vendorId) // For vendors, admin_id = vendor_id
       .eq('type', 'DEBIT')
       .order('created_at', { ascending: false }) // Newest first
-      .limit(100); // Limit to last 100 to keep it fast
+      .limit(100); 
 
     if (error) throw error;
 
-    // 1. Calculate Totals
     const totalSales = txns.reduce((sum, t) => sum + t.amount, 0);
     const totalCustomers = txns.length;
 
@@ -81,7 +80,7 @@ export const getVendorStats = async (req, res) => {
       totalSales, 
       totalCustomers, 
       chartData: hours,
-      recentTransactions: txns // <--- The new list
+      recentTransactions: txns 
     });
 
   } catch (err) {

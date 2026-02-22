@@ -69,15 +69,17 @@ export default function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/me/stats" element={<StudentStats />} />
 
-              {/* ADMIN AREA (Nested inside Profile check to ensure they are fully set up) */}
+              {/* ADMIN AREA  */}
               <Route element={<RequireAdmin />}>
                 <Route path="/admin/scanner" element={<AdminScanner />} />
                 <Route path="/admin/stats" element={<AdminStats />} />
               </Route>
             </Route>
           </Route>
+
+          {/* VENDOR AREA  */}
           <Route element={<RequireVendor />}>
-            {/* Redirect /vendor to scanner by default */}
+            
             <Route
               path="/vendor"
               element={<Navigate to="/vendor/scanner" replace />}

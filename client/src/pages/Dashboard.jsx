@@ -15,13 +15,11 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      {/* 1. Main Glass Card Container */}
+     
       <div className="bg-transparent text-center relative overflow-hidden">
         
-        {/* Optional: Subtle ambient glow behind the card content */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl -z-10"></div>
 
-        {/* Pass Header - Neon Badge Style */}
         <div className="bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 py-1.5 px-4 rounded-full inline-block text-[10px] font-black mb-6 tracking-[0.2em] uppercase shadow-[0_0_15px_rgba(99,102,241,0.2)]">
           Official Arcade Pass
         </div>
@@ -44,24 +42,22 @@ export default function Dashboard() {
         </p>
 
         {/* QR Code Section - MUST stay white for scannability */}
-        <div className="bg-white border outline outline-4 outline-white/10 rounded-2xl p-4 inline-block mb-8 shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-transform hover:scale-105 duration-300">
+        <div className="bg-white border outline outline-white/10 rounded-2xl p-4 inline-block mb-8 shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-transform hover:scale-105 duration-300">
           <QRCode
             value={profile.id}
             size={200}
             fgColor={"#000000"}
-            // Keeping bg transparent here since the parent div is solid white
             bgColor="transparent" 
           />
         </div>
 
-        {/* Balance Section - Inner Glass Panel */}
+        
         <div className="bg-white/5 rounded-2xl p-5 border border-white/10 backdrop-blur-sm shadow-inner">
           <p className="text-gray-400 text-xs uppercase tracking-widest mb-1 font-semibold">
             Current Balance
           </p>
           
           {profile.is_active ? (
-            // Space-themed Gradient Text for the balance
             <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 drop-shadow-sm">
               {profile.balance} <span className="text-lg font-bold text-cyan-400/80">Tokens</span>
             </p>

@@ -22,7 +22,7 @@ export default function AdminScanner() {
 
   const fileInputRef = useRef(null)
 
-  // 1. Handle QR Scan
+  // Handle QR Scan
   const handleScan = (detectedCodes) => {
     if (detectedCodes && detectedCodes.length > 0 && !scanResult) {
       const rawValue = detectedCodes[0].rawValue;
@@ -31,7 +31,7 @@ export default function AdminScanner() {
     }
   }
 
-  // 2. Fetch Student Details
+  // Fetch Student Details
   const fetchStudent = async (id) => {
     setStatusMsg('Verifying Student...')
     try {
@@ -54,7 +54,7 @@ export default function AdminScanner() {
     }
   }
 
-  // 3. Live UTR Validation (Approach 2)
+  // Live UTR Validation 
   const handleUtrChange = async (e) => {
     const val = e.target.value.toUpperCase().trim();
     setUtrNumber(val);
@@ -82,7 +82,7 @@ export default function AdminScanner() {
     }
   }
 
-  // 4. Handle Image Upload
+  // Handle Image Upload
   const handleImageCapture = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -119,7 +119,7 @@ export default function AdminScanner() {
     }
   }
 
-  // 5. Transaction Logic
+  // Transaction Logic
   const handleAddMoney = async (amount) => {
     if (!proofUrl) {
       alert("⚠️ Security Alert: You MUST upload a proof photo first.")
@@ -145,7 +145,7 @@ export default function AdminScanner() {
           studentId: scanResult,
           amount: amount,
           proofUrl: proofUrl,
-          utrNumber: utrNumber // <-- Sent to backend to save in DB
+          utrNumber: utrNumber 
         })
       })
 
@@ -203,7 +203,7 @@ export default function AdminScanner() {
           </div>
         )}
 
-        {/* STAGE 2: ACTION PANEL */}
+        {/* ACTION PANEL */}
         {studentData && (
           <div className="space-y-5 animate-fade-in pb-10">
             

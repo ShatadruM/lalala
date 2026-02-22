@@ -5,7 +5,7 @@ export const getStudentStats = async (req, res) => {
   const studentId = req.user.id;
 
   try {
-    // 1. Get Current Balance
+    // Get Current Balance
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('balance')
@@ -14,8 +14,7 @@ export const getStudentStats = async (req, res) => {
 
     if (profileError) throw profileError;
 
-    // 2. Get Transaction History
-    // We join 'admin_id' with 'profiles' to get the Name of the Admin or Vendor
+    // Get Transaction History
     const { data: txns, error: txnError } = await supabaseAdmin
       .from('transactions')
       .select(`
@@ -30,7 +29,7 @@ export const getStudentStats = async (req, res) => {
 
     if (txnError) throw txnError;
 
-    // 3. Calculate Total Spent (Sum of DEBITs)
+    //  Calculate Total Spent (Sum of DEBITs)
     const totalSpent = txns
       .filter(t => t.type === 'DEBIT')
       .reduce((sum, t) => sum + t.amount, 0);
