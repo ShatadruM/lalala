@@ -1,47 +1,70 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import { supabaseAdmin } from "../config/supabase.js";
 
+// POST /api/admin/credit (Assuming this is a POST based on your frontend fetch)
 export const addTokens = async (req, res) => {
-  const { studentId, amount, proofUrl } = req.body;
+  const { studentId, amount, proofUrl, utrNumber } = req.body; // <-- Added utrNumber
   const adminId = req.user.id;
 
-  if (!studentId || !amount || !proofUrl) {
-    return res.status(400).json({ error: 'Missing details: Proof image is mandatory.' });
+  // 1. Strict Validation: UTR is now mandatory
+  if (!studentId || !amount || !proofUrl || !utrNumber) {
+    return res
+      .status(400)
+      .json({ error: "Missing details: Proof image and UTR are mandatory." });
+  }
+
+  // 2. Double-check UTR length on the backend (Security Best Practice)
+  if (utrNumber.trim().length !== 12) {
+    return res
+      .status(400)
+      .json({ error: "Invalid UTR: Must be exactly 12 characters." });
   }
 
   const creditAmount = parseInt(amount);
   if (isNaN(creditAmount) || creditAmount <= 0) {
-    return res.status(400).json({ error: 'Invalid amount.' });
+    return res.status(400).json({ error: "Invalid amount." });
   }
 
   try {
     // ATOMIC CALL: We send ONE request to Supabase.
-    // The database handles the transaction internally.
-    const { data, error } = await supabaseAdmin.rpc('add_tokens_atomic', {
+    const { data, error } = await supabaseAdmin.rpc("add_tokens_atomic", {
       p_admin_id: adminId,
       p_student_id: studentId,
       p_amount: creditAmount,
-      p_proof_url: proofUrl
+      p_proof_url: proofUrl,
+      p_utr_number: utrNumber.trim().toUpperCase(), // <-- Passed to RPC, sanitized
     });
 
     if (error) {
       console.error("RPC Error:", error);
-      // Pass the database error message to the frontend (e.g., "Student not found")
-      return res.status(400).json({ error: error.message || 'Transaction failed' });
+
+      // Handle the duplicate UTR error specifically if it bubbles up from Postgres
+      if (error.code === "23505" || error.message.includes("utr_number")) {
+        return res
+          .status(400)
+          .json({
+            error: "FRAUD ALERT: This UTR has already been used in the system.",
+          });
+      }
+
+      return res
+        .status(400)
+        .json({ error: error.message || "Transaction failed" });
     }
 
     // Success response
-    console.log(`✅ Atomic Transaction: Admin ${adminId} -> ${creditAmount} -> Student ${studentId}`);
-    
-    res.json({ 
-      success: true, 
+    console.log(
+      `✅ Atomic Transaction: Admin ${adminId} -> ${creditAmount} -> Student ${studentId} (UTR: ${utrNumber})`,
+    );
+
+    res.json({
+      success: true,
       message: `Successfully added ${creditAmount} tokens`,
       studentName: data.student_name,
-      newBalance: data.new_balance 
+      newBalance: data.new_balance,
     });
-
   } catch (err) {
-    console.error('Server Error:', err);
-    res.status(500).json({ error: 'Internal system error' });
+    console.error("Server Error:", err);
+    res.status(500).json({ error: "Internal system error" });
   }
 };
 
@@ -51,25 +74,30 @@ export const getAdminStats = async (req, res) => {
 
   try {
     // 1. Run the RPC for the big numbers (Total & Unique)
-    const statsPromise = supabaseAdmin.rpc('get_admin_stats', {
-      p_admin_id: adminId
+    const statsPromise = supabaseAdmin.rpc("get_admin_stats", {
+      p_admin_id: adminId,
     });
 
     // 2. Run a standard query for the "Recent History" list
     const listPromise = supabaseAdmin
-      .from('transactions')
-      .select(`
+      .from("transactions")
+      .select(
+        `
         amount, 
         created_at, 
         student:profiles!student_id ( full_name, registration_number )
-      `)
-      .eq('admin_id', adminId)
-      .eq('type', 'CREDIT') // Only show money GIVEN
-      .order('created_at', { ascending: false }) // Newest first
+      `,
+      )
+      .eq("admin_id", adminId)
+      .eq("type", "CREDIT") // Only show money GIVEN
+      .order("created_at", { ascending: false }) // Newest first
       .limit(50);
 
     // Run both in parallel for speed
-    const [statsResult, listResult] = await Promise.all([statsPromise, listPromise]);
+    const [statsResult, listResult] = await Promise.all([
+      statsPromise,
+      listPromise,
+    ]);
 
     if (statsResult.error) throw statsResult.error;
     if (listResult.error) throw listResult.error;
@@ -77,11 +105,10 @@ export const getAdminStats = async (req, res) => {
     // Combine the data
     res.json({
       ...statsResult.data, // totalTokens, uniqueStudents
-      recentTransactions: listResult.data
+      recentTransactions: listResult.data,
     });
-
   } catch (err) {
-    console.error('Stats Error:', err);
-    res.status(500).json({ error: 'Failed to fetch admin stats' });
+    console.error("Stats Error:", err);
+    res.status(500).json({ error: "Failed to fetch admin stats" });
   }
 };
