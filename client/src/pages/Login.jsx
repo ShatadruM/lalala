@@ -38,7 +38,7 @@ export default function Login() {
               className="w-5 h-5 drop-shadow-md" 
               alt="Google Logo" 
             />
-            Sign in with College Email
+            Sign in with Google
           </button>
           
         </div>

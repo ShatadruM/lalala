@@ -24,7 +24,7 @@ export default function Dashboard() {
           Official Arcade Pass
         </div>
 
-        {/* Student Name */}
+        
         <h2 className="text-3xl font-black text-white leading-tight drop-shadow-md">
           {profile.full_name}
         </h2>
@@ -58,8 +58,8 @@ export default function Dashboard() {
           </p>
           
           {profile.is_active ? (
-            <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 drop-shadow-sm">
-              {profile.balance} <span className="text-lg font-bold text-cyan-400/80">Tokens</span>
+            <p className="text-4xl font-black text-green-400 drop-shadow-sm">
+              {profile.balance} <span className="text-lg font-bold text-green-400">Tokens</span>
             </p>
           ) : (
             <div>
