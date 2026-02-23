@@ -45,19 +45,31 @@ export default function VendorStats() {
    * @param {string} isoString - The date from Supabase
    * @param {boolean} showMinutes - Whether to show MM (true for list, false for graph)
    */
-  const formatToIST = (isoString, showMinutes = false) => {
-    if (!isoString) return "";
-    try {
-      return new Intl.DateTimeFormat("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour: "2-digit",
-        minute: showMinutes ? "2-digit" : undefined,
-        hour12: true,
-      }).format(new Date(isoString));
-    } catch (e) {
-      return "Invalid Time";
-    }
-  };
+ const formatToIST = (val, showMinutes = false) => {
+  if (!val) return "";
+
+  // 1. Handle "HH:MM" format (from your chartData)
+  if (typeof val === "string" && val.includes(":") && !val.includes("T")) {
+    const [hours, minutes] = val.split(":");
+    let h = parseInt(hours);
+    const ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12; // Convert 0 to 12 and 13 to 1
+    
+    return showMinutes ? `${h}:${minutes} ${ampm}` : `${h} ${ampm}`;
+  }
+
+  // 2. Handle ISO strings (from your transaction list)
+  try {
+    return new Intl.DateTimeFormat("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: showMinutes ? "2-digit" : undefined,
+      hour12: true,
+    }).format(new Date(val));
+  } catch (e) {
+    return "Invalid Time";
+  }
+};
 
   return (
     <Layout>

@@ -93,7 +93,7 @@ export const getAdminStats = async (req, res) => {
       .order("created_at", { ascending: false }) 
       .limit(50);
 
-    // Run both in parallel for speed
+    // Run both in parallel 
     const [statsResult, listResult] = await Promise.all([
       statsPromise,
       listPromise,
@@ -102,7 +102,7 @@ export const getAdminStats = async (req, res) => {
     if (statsResult.error) throw statsResult.error;
     if (listResult.error) throw listResult.error;
 
-    // Combine the data
+   
     res.json({
       ...statsResult.data, // totalTokens, uniqueStudents
       recentTransactions: listResult.data,
