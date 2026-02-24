@@ -43,9 +43,7 @@ export const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       try {
         // 2. Get the Session from Supabase Auth (Local)
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
-        if (error) throw error;
+        const { data: { session } } = await supabase.auth.getSession()
 
         if (session?.access_token) {
           // 3. If we have a token, ask the backend "Who is this?"
@@ -54,13 +52,7 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         console.error("Auth Init Failed:", err)
       } finally {
-        // 🚨 THE FIX: Check if Supabase is currently processing an OAuth redirect in the URL
-        const isRedirecting = window.location.hash.includes('access_token=') || window.location.hash.includes('error=');
-        
-        // Only stop loading if we are NOT waiting for the URL to be parsed
-        if (mounted && !isRedirecting) {
-          setLoading(false)
-        }
+        if (mounted) setLoading(false)
       }
     }
 
@@ -76,14 +68,9 @@ export const AuthProvider = ({ children }) => {
         setProfile(null)
         setLoading(false)
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        // If they just signed in from a URL redirect, keep loading true while we sync
-        setLoading(true)
-        
         // Re-sync with backend to ensure data is fresh
         await fetchUserStatus(session.access_token)
-        
-        // NOW we can safely reveal the dashboard
-        if (mounted) setLoading(false)
+        setLoading(false)
       }
     })
 
